@@ -10,6 +10,13 @@ namespace Chessington.GameEngine
         private readonly Piece?[,] board;
         public Player CurrentPlayer { get; private set; }
         public IList<Piece> CapturedPieces { get; private set; }
+        
+        public Square[] KingLocations { get; private set; }
+
+        public bool IsWhiteKingChecked { get; private set; }
+        public bool IsBlackKingChecked { get; private set; }
+        public bool CheckMate { get; private set; }
+
 
         public Board()
             : this(Player.White) { }
@@ -19,6 +26,9 @@ namespace Chessington.GameEngine
             board = boardState ?? new Piece[GameSettings.BoardSize, GameSettings.BoardSize];
             CurrentPlayer = currentPlayer;
             CapturedPieces = new List<Piece>();
+            KingLocations = [Square.At(7, 4), Square.At(0, 4)];
+            IsBlackKingChecked = false;
+            IsWhiteKingChecked = false;
         }
 
         public void AddPiece(Square square, Piece pawn)
@@ -61,6 +71,38 @@ namespace Chessington.GameEngine
             board[to.Row, to.Col] = board[from.Row, from.Col];
             board[from.Row, from.Col] = null;
 
+            if (movingPiece is King)
+            {
+                if (CurrentPlayer == Player.White)
+                {
+                    KingLocations[0] = to;
+                }
+                else
+                {
+                    KingLocations[1] = to;
+                }
+            }
+            else
+            {
+                IEnumerable<Square> nextAvailableMoves = movingPiece.GetAvailableMoves(this);
+                if (CurrentPlayer == Player.White)
+                {
+                    if (nextAvailableMoves.Any(x => x.Equals(KingLocations[1])))
+                    {
+                        IsBlackKingChecked = true;
+
+                    }
+                }
+                else
+                {
+                    if (nextAvailableMoves.Contains(KingLocations[0]))
+                    {
+                        IsWhiteKingChecked = true;
+                    }
+                }
+            }
+
+            
             CurrentPlayer = movingPiece.Player == Player.White ? Player.Black : Player.White;
             OnCurrentPlayerChanged(CurrentPlayer);
         }

@@ -76,5 +76,39 @@ namespace Chessington.GameEngine.Tests.Pieces
             var moves = king.GetAvailableMoves(board);
             moves.Should().NotContain(Square.At(4, 5));
         }
+
+        [Test]
+        public void Kings_CanBeChecked()
+        {
+            var board = new Board();
+            var king = new King(Player.Black);
+            board.AddPiece(Square.At(0, 4), king);
+            var pawn = new Pawn(Player.White);
+            board.AddPiece(Square.At(2, 5), pawn);
+            board.MovePiece(Square.At(2, 5), Square.At(1, 5));
+            board.IsBlackKingChecked.Should().BeTrue();
+        }
+
+        [Test]
+        public void Kings_CanBeCheckMate()
+        {
+            var board = new Board();
+            var king = new King(Player.Black);
+            board.AddPiece(Square.At(0, 4), king);
+            var pawn = new Pawn(Player.White);
+            board.AddPiece(Square.At(1, 5), pawn);
+            var rook = new Rook(Player.White);
+            board.AddPiece(Square.At(7, 3), rook);
+            var bishop = new Bishop(Player.White);
+            board.AddPiece(Square.At(3, 6), bishop);
+            var bishopTwo = new Bishop(Player.White);
+            board.AddPiece(Square.At(3, 2), bishopTwo);
+            
+            board.CheckMate.Should().BeTrue();
+        }
+
+        
+
+
     }
 }
