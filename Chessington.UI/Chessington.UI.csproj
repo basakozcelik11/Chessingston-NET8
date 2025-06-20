@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Chessington.GameEngine\Chessington.GameEngine.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Caliburn.Micro" Version="4.0.230" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Icons\Black B.ico" />
+    <Resource Include="Icons\Black K.ico" />
+    <Resource Include="Icons\Black N.ico" />
+    <Resource Include="Icons\Black P.ico" />
+    <Resource Include="Icons\Black Q.ico" />
+    <Resource Include="Icons\Black R.ico" />
+    <Resource Include="Icons\White B.ico" />
+    <Resource Include="Icons\White K.ico" />
+    <Resource Include="Icons\White N.ico" />
+    <Resource Include="Icons\White P.ico" />
+    <Resource Include="Icons\White Q.ico" />
+    <Resource Include="Icons\White R.ico" />
+  </ItemGroup>
+
+</Project>
