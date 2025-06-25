@@ -15,7 +15,7 @@ namespace Chessington.GameEngine.Pieces
 
         public abstract IEnumerable<Square> GetAvailableMoves(Board board);
 
-        public IEnumerable<Square> MoveDiagonally(Square position)
+        public List<Square> MoveDiagonally(Square position)
         {
             List<Square> squares = new List<Square>();
             int j = 1;
@@ -51,7 +51,7 @@ namespace Chessington.GameEngine.Pieces
             return squares;
         }
 
-        public IEnumerable<Square> MoveLaterally(Square position)
+        public List<Square> MoveLaterally(Square position)
         {
             List<Square> squares = new List<Square>();
             for (var i = 0; i < 8; i++)
