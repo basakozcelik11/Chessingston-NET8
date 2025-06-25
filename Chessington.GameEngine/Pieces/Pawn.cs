@@ -24,7 +24,7 @@ namespace Chessington.GameEngine.Pieces
             }
             else
             {
-                if (position.Row == 7)
+                if (position.Row == 6)
                 {
                     squares.Add(Square.At(position.Row - 2, position.Col));
                 }
