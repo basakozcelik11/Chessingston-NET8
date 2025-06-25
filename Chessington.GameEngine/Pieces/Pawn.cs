@@ -15,21 +15,39 @@ namespace Chessington.GameEngine.Pieces
 
             if (this.Player == Player.Black)
             {
+                var newPosition = Square.At(position.Row + 1, position.Col);
+                if (!board.CheckBlocked(Player, newPosition))
+                {
+                    squares.Add(newPosition);
+                }
                 if (position.Row == 1)
                 {
-                    squares.Add(Square.At(position.Row + 2, position.Col));
+                    var newTempPosition = Square.At(position.Row + 2, position.Col);
+                    if (!board.CheckBlocked(Player, newTempPosition) && !board.CheckBlocked(Player, newPosition))
+                    {
+                        squares.Add(newTempPosition);
+                    }
                 }
-                squares.Add(Square.At(position.Row + 1, position.Col));
+            
                 
             }
             else
             {
+                var newPosition = Square.At(position.Row - 1, position.Col);
+                if (!board.CheckBlocked(Player, newPosition)){
+                    squares.Add(newPosition);
+                }
                 if (position.Row == 6)
                 {
-                    squares.Add(Square.At(position.Row - 2, position.Col));
+                    var newTempPosition = Square.At(position.Row - 2, position.Col);
+                    if (!board.CheckBlocked(Player, newTempPosition) && !board.CheckBlocked(Player, newPosition))
+                    {
+                        squares.Add(newTempPosition);
+                    }
                 }
-                squares.Add(Square.At(position.Row - 1, position.Col));
+            
             }
+
             return squares;
         }
     }

@@ -9,14 +9,14 @@ namespace Chessington.GameEngine
     {
         private readonly Piece?[,] board;
         public Player CurrentPlayer { get; private set; }
-        public IList<Piece> CapturedPieces { get; private set; } 
+        public IList<Piece> CapturedPieces { get; private set; }
 
         public Board()
             : this(Player.White) { }
 
         public Board(Player currentPlayer, Piece[,]? boardState = null)
         {
-            board = boardState ?? new Piece[GameSettings.BoardSize, GameSettings.BoardSize]; 
+            board = boardState ?? new Piece[GameSettings.BoardSize, GameSettings.BoardSize];
             CurrentPlayer = currentPlayer;
             CapturedPieces = new List<Piece>();
         }
@@ -25,12 +25,12 @@ namespace Chessington.GameEngine
         {
             board[square.Row, square.Col] = pawn;
         }
-    
+
         public Piece? GetPiece(Square square)
         {
             return board[square.Row, square.Col];
         }
-        
+
         public Square FindPiece(Piece piece)
         {
             for (var row = 0; row < GameSettings.BoardSize; row++)
@@ -76,9 +76,9 @@ namespace Chessington.GameEngine
             }
             return false;
         }
-        
+
         public delegate void PieceCapturedEventHandler(Piece piece);
-        
+
         public event PieceCapturedEventHandler? PieceCaptured;
 
         protected virtual void OnPieceCaptured(Piece piece)
@@ -95,6 +95,17 @@ namespace Chessington.GameEngine
         {
             var handler = CurrentPlayerChanged;
             if (handler != null) handler(player);
+        }
+
+        public bool CheckBlocked(Player player, Square position)
+        {
+            Piece? blocker = GetPiece(position);
+            if (blocker != null)
+            {
+                return true;
+                
+            }
+            return false;
         }
     }
 }
