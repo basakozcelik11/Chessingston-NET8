@@ -39,7 +39,7 @@ namespace Chessington.GameEngine.Pieces
 
         public abstract IEnumerable<Square> GetAvailableMoves(Board board);
 
-        public List<Square> AvailableMoves(List<(int, int)> directions, Square position, Board board, int? upperBound = GameSettings.BoardSize)
+        public List<Square> AvailableMoves(List<(int, int)> directions, Square position, Board board, int? upperBound = GameSettings.BoardSize, bool isPawn = false)
         {
             List<Square> squares = [];
             foreach ((int, int) direction in directions)
@@ -52,7 +52,12 @@ namespace Chessington.GameEngine.Pieces
                 {
                     if (board.CheckBlocked(Player, nextPosition))
                     {
-                        break;
+                        var piece = board.GetPiece(nextPosition);
+                        if (piece != null && piece.Player != Player && !isPawn)
+                        {
+                            squares.Add(nextPosition);
+                        }
+                            break;
                     }
                     squares.Add(nextPosition);
                     nextPosition = Square.At(nextPosition.Row + dx, nextPosition.Col + dy);

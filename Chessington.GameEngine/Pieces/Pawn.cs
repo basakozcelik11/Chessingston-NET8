@@ -15,14 +15,13 @@ namespace Chessington.GameEngine.Pieces
 
             if (this.Player == Player.Black)
             {
-                squares = AvailableMoves([(1, 0)], position, board, position.Row == 1? 2 : 1);  
+                squares = AvailableMoves([(1, 0)], position, board, position.Row == 1? 2 : 1, true);  
             
             }
             else
             {
-                squares = AvailableMoves([(-1, 0)], position, board, position.Row == 6? 2 : 1);         
+                squares = AvailableMoves([(-1, 0)], position, board, position.Row == 6? 2 : 1, true);         
             }
-
             return squares;
         }
     }
