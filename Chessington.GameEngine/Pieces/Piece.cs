@@ -37,6 +37,7 @@ namespace Chessington.GameEngine.Pieces
             (-1, -2)
         ];
 
+
         public abstract IEnumerable<Square> GetAvailableMoves(Board board);
 
         public List<Square> AvailableMoves(List<(int, int)> directions, Square position, Board board, int? upperBound = GameSettings.BoardSize, bool isPawn = false)
@@ -50,14 +51,14 @@ namespace Chessington.GameEngine.Pieces
                 var upperBoundTemp = upperBound;
                 while (board.CheckWithinBounds(nextPosition) && upperBoundTemp > 0)
                 {
-                    if (board.CheckBlocked(Player, nextPosition))
+                    var piece = board.GetPiece(nextPosition);
+                    if (piece != null)
                     {
-                        var piece = board.GetPiece(nextPosition);
-                        if (piece != null && piece.Player != Player && !isPawn)
+                        if (piece.Player != Player && !isPawn)
                         {
                             squares.Add(nextPosition);
                         }
-                            break;
+                        break;
                     }
                     squares.Add(nextPosition);
                     nextPosition = Square.At(nextPosition.Row + dx, nextPosition.Col + dy);

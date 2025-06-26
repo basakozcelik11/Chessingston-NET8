@@ -97,15 +97,6 @@ namespace Chessington.GameEngine
             if (handler != null) handler(player);
         }
 
-        public bool CheckBlocked(Player player, Square position)
-        {
-            Piece? blocker = GetPiece(position);
-            if (blocker != null)
-            {
-                return true;
-                
-            }
-            return false;
-        }
+        
     }
 }
