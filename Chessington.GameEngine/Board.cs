@@ -73,38 +73,142 @@ namespace Chessington.GameEngine
 
             if (movingPiece is King)
             {
-                if (CurrentPlayer == Player.White)
-                {
-                    KingLocations[0] = to;
-                }
-                else
-                {
-                    KingLocations[1] = to;
-                }
-            }
-            else
-            {
-                IEnumerable<Square> nextAvailableMoves = movingPiece.GetAvailableMoves(this);
-                if (CurrentPlayer == Player.White)
-                {
-                    if (nextAvailableMoves.Any(x => x.Equals(KingLocations[1])))
-                    {
-                        IsBlackKingChecked = true;
-
-                    }
-                }
-                else
-                {
-                    if (nextAvailableMoves.Contains(KingLocations[0]))
-                    {
-                        IsWhiteKingChecked = true;
-                    }
-                }
-            }
-
-            
+                KingLocations[(int)CurrentPlayer] = to;
+            } 
             CurrentPlayer = movingPiece.Player == Player.White ? Player.Black : Player.White;
-            OnCurrentPlayerChanged(CurrentPlayer);
+           
+            OnCurrentPlayerChanged(CurrentPlayer);           
+        }
+
+        public void MovePiece(Square from, Square to, Piece[,] copyBoard)
+        {
+            CheckMate = false;
+            var movingPiece = copyBoard[from.Row, from.Col];
+            if (movingPiece == null) { return; }
+    
+            if (movingPiece.Player != CurrentPlayer)
+            {
+                throw new ArgumentException("The supplied piece does not belong to the current player.");
+            }
+
+            //If the space we're moving to is occupied, we need to mark it as captured.
+            if (copyBoard[to.Row, to.Col] != null)
+            {
+                OnPieceCaptured(copyBoard[to.Row, to.Col]!);
+            }
+
+            //Move the piece and set the 'from' square to be empty.
+            copyBoard[to.Row, to.Col] = copyBoard[from.Row, from.Col];
+            copyBoard[from.Row, from.Col] = null;
+
+            if (movingPiece is King)
+            {
+                KingLocations[(int)CurrentPlayer] = to;
+            } 
+            CurrentPlayer = movingPiece.Player == Player.White ? Player.Black : Player.White;
+        }
+
+        private bool IsCheckMate(Player player, Piece?[,] board)
+        {
+            for (var row = 0; row < GameSettings.BoardSize; row++)
+            {
+                for (var col = 0; col < GameSettings.BoardSize; col++)
+                {
+                    Piece? currentPiece = board[row, col];
+
+                    if (currentPiece != null && currentPiece.Player == player)
+                    {
+                        IEnumerable<Square> nextAvailableMoves = currentPiece.GetAvailableMoves(this);
+                        foreach (Square move in nextAvailableMoves)
+                        {
+                            Piece[,] copyBoard = (Piece[,])board.Clone();
+                            var storeKingLocation = KingLocations[(int)player];
+                            MovePiece(FindPiece(currentPiece), move, copyBoard);
+                            if (!IsKingChecked(player, copyBoard))
+                            {
+                                return false;
+                            }
+                            Console.WriteLine("CheckMate" + KingLocations[(int)player]);
+                            KingLocations[(int)player] = storeKingLocation;
+                            Console.WriteLine("CheckMate Restored" + KingLocations[(int)player]);
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+        
+        public bool IsCheckMate(Player player)
+        {
+            for (var row = 0; row < GameSettings.BoardSize; row++)
+            {
+                for (var col = 0; col < GameSettings.BoardSize; col++)
+                {
+                    Piece? currentPiece = board[row, col];
+
+                    if (currentPiece != null && currentPiece.Player == player)
+                    {
+                        IEnumerable<Square> nextAvailableMoves = currentPiece.GetAvailableMoves(this);
+                        foreach (Square move in nextAvailableMoves)
+                        {
+                            Piece[,] copyBoard = (Piece[,])board.Clone();
+                            var storeKingLocation = KingLocations[(int)player];
+                            MovePiece(Square.At(row, col), move, copyBoard);
+                            if (!IsKingChecked(player, copyBoard))
+                            {
+                                return false;
+                            }
+                            KingLocations[(int)player] = storeKingLocation;                           
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
+        private bool IsKingChecked(Player player, Piece[,] board)
+        {
+            for (var row = 0; row < GameSettings.BoardSize; row++)
+            {
+                for (var col = 0; col < GameSettings.BoardSize; col++)
+                {
+                    Piece? currentPiece = board[row, col];
+
+                    if (currentPiece != null && currentPiece.Player != player)
+                    {
+                        IEnumerable<Square> nextAvailableMoves = currentPiece.GetAvailableMoves(new Board(player,board));
+                        Console.WriteLine("Check"+KingLocations[(int)player]);
+                        if (nextAvailableMoves.Any(move => move.Equals(KingLocations[(int)player])))
+                        {
+                            return true;
+
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        public bool IsKingChecked(Player player)
+        {
+            for (var row = 0; row < GameSettings.BoardSize; row++)
+            {
+                for (var col = 0; col < GameSettings.BoardSize; col++)
+                {
+                    Piece? currentPiece = board[row, col];
+
+                    if (currentPiece != null && currentPiece.Player != player)
+                    {
+                        IEnumerable<Square> nextAvailableMoves = currentPiece.GetAvailableMoves(this); ;
+                        if (nextAvailableMoves.Any(move => move.Equals(KingLocations[(int)player])))
+                        {
+                            return true;
+
+                        }
+                    }
+                }
+            }
+            return false;
         }
 
         public bool CheckWithinBounds(Square position)

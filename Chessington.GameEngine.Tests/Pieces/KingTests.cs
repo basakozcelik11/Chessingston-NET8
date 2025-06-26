@@ -86,9 +86,8 @@ namespace Chessington.GameEngine.Tests.Pieces
             var pawn = new Pawn(Player.White);
             board.AddPiece(Square.At(2, 5), pawn);
             board.MovePiece(Square.At(2, 5), Square.At(1, 5));
-            board.IsBlackKingChecked.Should().BeTrue();
+            board.IsKingChecked(Player.Black).Should().BeTrue();
         }
-
         [Test]
         public void Kings_CanBeCheckMate()
         {
@@ -96,15 +95,17 @@ namespace Chessington.GameEngine.Tests.Pieces
             var king = new King(Player.Black);
             board.AddPiece(Square.At(0, 4), king);
             var pawn = new Pawn(Player.White);
-            board.AddPiece(Square.At(1, 5), pawn);
+            board.AddPiece(Square.At(0, 5), pawn);
+            var pawnTemp = new Pawn(Player.White);
+            board.AddPiece(Square.At(2, 6), pawnTemp);
             var rook = new Rook(Player.White);
             board.AddPiece(Square.At(7, 3), rook);
             var bishop = new Bishop(Player.White);
             board.AddPiece(Square.At(3, 6), bishop);
             var bishopTwo = new Bishop(Player.White);
             board.AddPiece(Square.At(3, 2), bishopTwo);
-            
-            board.CheckMate.Should().BeTrue();
+            board.MovePiece(Square.At(0, 5), Square.At(1, 5));
+            board.IsCheckMate(Player.Black).Should().BeTrue();
         }
 
         
