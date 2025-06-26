@@ -25,10 +25,21 @@ namespace Chessington.GameEngine.Pieces
                 (-1, 0),
                 (0, -1)
             ];
-            
+
+        public List<(int, int)> KnightDirection = [
+            (2, 1),
+            (2, -1),
+            (-2, 1),
+            (-2, -1),
+            (1, 2),
+            (1, -2),
+            (-1, 2),
+            (-1, -2)
+        ];
+
         public abstract IEnumerable<Square> GetAvailableMoves(Board board);
 
-        public List<Square> AvailableMoves(List<(int, int)> directions, Square position, Board board)
+        public List<Square> AvailableMoves(List<(int, int)> directions, Square position, Board board, int? upperBound = GameSettings.BoardSize)
         {
             List<Square> squares = [];
             foreach ((int, int) direction in directions)
@@ -36,7 +47,8 @@ namespace Chessington.GameEngine.Pieces
                 var dx = direction.Item1;
                 var dy = direction.Item2;
                 var nextPosition = Square.At(position.Row + dx, position.Col + dy);
-                while (board.CheckWithinBounds(nextPosition))
+                var upperBoundTemp = upperBound;
+                while (board.CheckWithinBounds(nextPosition) && upperBoundTemp > 0)
                 {
                     if (board.CheckBlocked(Player, nextPosition))
                     {
@@ -44,6 +56,7 @@ namespace Chessington.GameEngine.Pieces
                     }
                     squares.Add(nextPosition);
                     nextPosition = Square.At(nextPosition.Row + dx, nextPosition.Col + dy);
+                    upperBoundTemp--;
                 }
             }
             return squares;

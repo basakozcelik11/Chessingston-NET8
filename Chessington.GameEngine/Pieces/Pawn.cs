@@ -15,37 +15,12 @@ namespace Chessington.GameEngine.Pieces
 
             if (this.Player == Player.Black)
             {
-                var newPosition = Square.At(position.Row + 1, position.Col);
-                if (!board.CheckBlocked(Player, newPosition))
-                {
-                    squares.Add(newPosition);
-                }
-                if (position.Row == 1)
-                {
-                    var newTempPosition = Square.At(position.Row + 2, position.Col);
-                    if (!board.CheckBlocked(Player, newTempPosition) && !board.CheckBlocked(Player, newPosition))
-                    {
-                        squares.Add(newTempPosition);
-                    }
-                }
+                squares = AvailableMoves([(1, 0)], position, board, position.Row == 1? 2 : 1);  
             
-                
             }
             else
             {
-                var newPosition = Square.At(position.Row - 1, position.Col);
-                if (!board.CheckBlocked(Player, newPosition)){
-                    squares.Add(newPosition);
-                }
-                if (position.Row == 6)
-                {
-                    var newTempPosition = Square.At(position.Row - 2, position.Col);
-                    if (!board.CheckBlocked(Player, newTempPosition) && !board.CheckBlocked(Player, newPosition))
-                    {
-                        squares.Add(newTempPosition);
-                    }
-                }
-            
+                squares = AvailableMoves([(-1, 0)], position, board, position.Row == 6? 2 : 1);         
             }
 
             return squares;
